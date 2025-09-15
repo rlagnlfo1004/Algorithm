@@ -9,10 +9,9 @@
 #    Solved: 2025/07/25 18:35:35 by hrkim2001     ###          ###   ##.kr     #
 #                                                                              #
 #  **************************************************************************  #
-n = int(input())
-numbers = input()
+N = int(input())
+numbers = list(input())
 sum = 0
-
 for i in numbers:
     sum += int(i)
 print(sum)
