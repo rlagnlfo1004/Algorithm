@@ -6,48 +6,48 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1253                           #+#        #+#      #+#    */
-/*   Solved: 2025/04/13 00:45:40 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/01/01 13:15:08 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
-import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        br.close();
-        long[] arr = new long[N];
-        for(int i = 0; i < N; i++) {
-            arr[i] = Long.parseLong(st.nextToken());
+        long[] A = new long[N];
+        for(int i=0; i<N; i++) {
+            A[i] = Long.parseLong(st.nextToken());
         }
-        Arrays.sort(arr);
 
+        Arrays.sort(A);
         int count = 0;
 
-        for(int k = 0; k < N; k++) {
-            int i = 0;
-            int j = N - 1;
+        for(int i=0; i<N; i++) {
+            int start = 0;
+            int end = N - 1;
 
-            while(i < j) {
-                long sum = arr[i] + arr[j];
-                
-                if(sum > arr[k]) {
-                    j--;
-                } else if(sum < arr[k]) {
-                    i++;
-                } else {
-                    if(i != k && j != k) {
+            while(start < end) {
+                long sum = A[start] + A[end];
+                if(A[i] == sum) {
+                    if(start != i && end != i) {
                         count++;
                         break;
-                    } else if(i == k) {
-                        i++;
-                    } else {
-                        j--;
+                    } else if (start == i) {
+                        start++;
+                    } else if (end == i) {
+                        end--;
                     }
+                } else if(A[i] > sum) {
+                    start++;
+                } else {
+                    end--;
                 }
             }
         }
