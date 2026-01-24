@@ -6,86 +6,75 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1991                           #+#        #+#      #+#    */
-/*   Solved: 2025/05/17 03:02:20 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/01/25 02:00:09 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
 import java.io.*;
 
-class Node {
-    char value;
-    Node right;
-    Node left;
-
-    public Node(char value) {
-        this.value = value;
-        right = null;
-        left = null;
-    }
-}
-
 public class Main {
+    static int[][] tree;
+    static int N;
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    static Node[] tree;
-
-    public static void preOrder(Node node) {
-        if(node == null) {
-            return;
-        }
-        System.out.print(node.value);
-        preOrder(node.left);
-        preOrder(node.right);
-    }
-
-    public static void inOrder(Node node) {
-        if(node == null) {
-            return;
-        }
-        inOrder(node.left);
-        System.out.print(node.value);
-        inOrder(node.right);
-    }
-
-    public static void postOrder(Node node) {
-        if(node == null) {
-            return;
-        }
-        postOrder(node.left);
-        postOrder(node.right);
-        System.out.print(node.value);
-    }
-
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+        StringTokenizer st;
 
-        Node[] tree = new Node[n];
-        for(int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            char parent = st.nextToken().charAt(0);
-            char left = st.nextToken().charAt(0);
-            char right = st.nextToken().charAt(0);
+        N = Integer.parseInt(br.readLine());
+        tree = new int[N][2];
 
-            if(tree[parent - 'A'] == null) {
-                tree[parent - 'A'] = new Node(parent);
-            }
+        for (int i = 1; i <= N; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = st.nextToken().charAt(0) - 'A';
+            char b = st.nextToken().charAt(0);
+            char c = st.nextToken().charAt(0);
+            tree[a][0] = b == '.' ? -1 : b - 'A';
+            tree[a][1] = c == '.' ? -1 : c - 'A';
+        }
+        preOrder(0);
+        bw.write("\n");
+        inOrder(0);
+        bw.write("\n");
+        postOrder(0);
+        bw.write("\n");
 
-            if(left != '.') {
-                tree[left - 'A'] = new Node(left);
-                tree[parent - 'A'].left = tree[left - 'A'];
-            }
+        bw.flush();
+    }
 
-            if(right != '.') {
-                tree[right - 'A'] = new Node(right);
-                tree[parent - 'A'].right = tree[right - 'A'];
-            }
+    static void preOrder(int now) throws IOException {
+        bw.write(now + 'A');
+
+        if(tree[now][0] != -1) {
+            preOrder(tree[now][0]);
+        }
+        
+        if(tree[now][1] != -1) {
+            preOrder(tree[now][1]);
+        }
+    }
+
+    static void inOrder(int now) throws IOException {
+        if(tree[now][0] != -1) {
+            inOrder(tree[now][0]);
         }
 
-        preOrder(tree[0]);
-        System.out.println();
-        inOrder(tree[0]);
-        System.out.println();
-        postOrder(tree[0]);
-        System.out.println();
+        bw.write(now + 'A');
+        
+        if(tree[now][1] != -1) {
+            inOrder(tree[now][1]);
+        }
+    }
+
+    static void postOrder(int now) throws IOException {        
+        if(tree[now][0] != -1) {
+            postOrder(tree[now][0]);
+        }
+        
+        if(tree[now][1] != -1) {
+            postOrder(tree[now][1]);
+        }
+
+        bw.write(now + 'A');
     }
 }
