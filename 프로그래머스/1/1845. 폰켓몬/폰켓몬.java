@@ -3,13 +3,13 @@ import java.util.*;
 class Solution {
     public int solution(int[] nums) {
         
-        HashMap<Integer, Integer> map = new HashMap<>();
+        HashSet<Integer> set = new HashSet<>();
         
         for(int num : nums) {
-            map.put(num, map.getOrDefault(num, 0) + 1);
+            set.add(num);
         }
         
-        int answer = Math.min(map.keySet().size(), nums.length / 2);
+        int answer = Math.min(set.size(), nums.length / 2);
         return answer;
     }
 }
