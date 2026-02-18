@@ -8,8 +8,8 @@ class Solution {
         }
         
         int answer = 1;
-        for(String key : map.keySet()) {
-            answer *= map.get(key) + 1;
+        for(Integer value : map.values()) {
+            answer *= value + 1;
         }
         return answer - 1;
     }
