@@ -3,13 +3,12 @@ import java.util.*;
 public class Solution {
     public int[] solution(int []arr) {
         
-        HashSet<Integer> set = new HashSet<>();
         ArrayList<Integer> list = new ArrayList<>();
-        for(int num : arr) {
-            if(set.contains(num)) continue;
-            set = new HashSet<>();
-            set.add(num);
-            list.add(num);
+        int prev = -1;
+        for(int now : arr) {
+            if(prev == now) continue;
+            list.add(now);
+            prev = now;
         }
         
         int[] answer = new int[list.size()];
