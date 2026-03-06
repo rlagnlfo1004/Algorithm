@@ -6,20 +6,13 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/12891                          #+#        #+#      #+#    */
-/*   Solved: 2026/01/01 13:59:32 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/06 17:12:55 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-
-    static int checkCount;
-    static int[] myCount;
-    static int[] check;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -27,97 +20,55 @@ public class Main {
         int S = Integer.parseInt(st.nextToken());
         int P = Integer.parseInt(st.nextToken());
         
-        char[] A = new char[S];
-        A = br.readLine().toCharArray();
+        String password = br.readLine();
 
-        myCount = new int[4];
-        checkCount = 0;
-
-        check = new int[4];
         st = new StringTokenizer(br.readLine());
-        for(int i=0; i<4; i++){
+        int check[] = new int[4];
+        for (int i = 0; i < 4; i++) {
             check[i] = Integer.parseInt(st.nextToken());
-            if(check[i] == 0) {
-                checkCount++;
-            }
         }
 
-        for(int i = 0; i < P; i++) {
-            add(A[i]);
+        int myCheck[] = new int[4];
+        for (int i = 0; i < P; i++) {
+            myCheck[convert(password.charAt(i))]++;
+        }
+
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (check[i] <= myCheck[i]) count++;
         }
 
         int result = 0;
-        if(checkCount == 4) {
-            result++;
+        if (count == 4) result++;
+
+        for (int i = P; i < S; i++) {
+            int old = convert(password.charAt(i - P));
+            int next = convert(password.charAt(i));
+
+            if (myCheck[old] == check[old]) count--;
+            myCheck[old]--;
+
+            myCheck[next]++;
+            if (myCheck[next] == check[next]) count++;
+
+            if(count == 4) result++;
         }
 
-        for(int i=P; i<S; i++) {
-            int j = i - P;
-            add(A[i]);
-            remove(A[j]);
-            if(checkCount == 4) {
-                result++;
-            }
-        }
         System.out.println(result);
-        br.close();
     }
 
-    private static void add(char c) {
+    static int convert(char c) {
         switch(c) {
-            case 'A' :
-                myCount[0]++;
-                if(myCount[0] == check[0]) {
-                    checkCount++;
-                }
-                break;
+            case 'A' : 
+                return 0;
             case 'C' :
-                myCount[1]++;
-                if(myCount[1] == check[1]) {
-                    checkCount++;
-                }
-                break;
+                return 1;
             case 'G' :
-                myCount[2]++;
-                if(myCount[2] == check[2]) {
-                    checkCount++;
-                }
-                break;
+                return 2;
             case 'T' :
-                myCount[3]++;
-                if(myCount[3] == check[3]) {
-                    checkCount++;
-                }
-                break;
+                return 3;
         }
-    }
 
-    private static void remove(char c) {
-        switch(c) {
-            case 'A' :
-                if(myCount[0] == check[0]) {
-                    checkCount--;
-                }
-                myCount[0]--;
-                break;
-            case 'C' :
-                if(myCount[1] == check[1]) {
-                    checkCount--;
-                }
-                myCount[1]--;
-                break;
-            case 'G' :
-                if(myCount[2] == check[2]) {
-                    checkCount--;
-                }
-                myCount[2]--;
-                break;
-            case 'T' :
-                if(myCount[3] == check[3]) {
-                    checkCount--;
-                }
-                myCount[3]--;
-                break;
-        }
+        return -1;
     }
 }
