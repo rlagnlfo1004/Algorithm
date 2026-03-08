@@ -6,43 +6,41 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/17298                          #+#        #+#      #+#    */
-/*   Solved: 2026/01/04 13:55:16 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/08 23:21:18 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
         int N = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
         int[] A = new int[N];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
+        int[] result = new int[N];
+        for(int i = 0; i < N; i++) {
             A[i] = Integer.parseInt(st.nextToken());
         }
 
         Stack<Integer> stack = new Stack<>();
-        int[] result = new int[N];
-        stack.push(0);
-        
-        for (int i = 1; i < N; i++) {
-            while(!stack.empty() && A[i] > A[stack.peek()]) {
+        for(int i = 0; i < N; i++) {
+            while(!stack.isEmpty() && A[stack.peek()] < A[i]) {
                 result[stack.pop()] = A[i];
             }
             stack.push(i);
         }
 
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        for (int i = 0; i < N; i++) {
-            if(result[i] == 0) {
-                bw.write("-1 ");
-            } else {
-                bw.write(result[i] + " ");
-            }
+        while(!stack.isEmpty()) {
+            result[stack.pop()] = -1;
         }
-        br.close();
+
+        for(int i = 0; i < N; i++) {
+            bw.write(result[i] + " ");
+        }
         bw.flush();
     }
 }
