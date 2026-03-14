@@ -6,7 +6,7 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1541                           #+#        #+#      #+#    */
-/*   Solved: 2026/01/11 00:54:34 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/14 23:25:25 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
@@ -16,23 +16,18 @@ public class Main {
         String str = new Scanner(System.in).next();
         String[] A = str.split("[-]");
 
-        int result = 0;
-        for (int i = 0; i < A.length; i++) {
-            if(i == 0) {
-                result += add(A[i]);
-            } else {
-                result -= add(A[i]);
-            }
+        int sum = add(A[0]);
+        for(int i = 1; i < A.length; i++) {
+            sum -= add(A[i]);
         }
-
-        System.out.println(result);
+        System.out.println(sum);
     }
 
     static int add(String str) {
-        String[] S = str.split("[+]");
+        String[] A = str.split("[+]");
         int sum = 0;
-        for (int i = 0; i < S.length; i++) {
-            sum += Integer.parseInt(S[i]);
+        for(String s : A) {
+            sum += Integer.parseInt(s);
         }
         return sum;
     }
