@@ -6,72 +6,69 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1325                           #+#        #+#      #+#    */
-/*   Solved: 2026/01/15 16:38:08 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/15 20:39:33 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
 import java.io.*;
 
 public class Main {
-    static boolean[] visited;
+
+    static int N;
     static ArrayList<Integer>[] A;
-    static int[] trust;
-    static int N, M;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
+    
         N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        trust = new int[N + 1];
         A = new ArrayList[N + 1];
-        for (int i = 1; i <= N; i++) {
-            A[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < M; i++) {
+        for(int i = 1; i <= N; i++) A[i] = new ArrayList<>();
+
+        for(int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            A[a].add(b);
-        }
-
-        for (int i = 1; i <= N; i++) {
-            BFS(i);
+            A[b].add(a);
         }
 
         int max = 0;
-        for (int i = 1; i <= N; i++) {
-            max = Math.max(max, trust[i]);
+        int[] result = new int[N + 1];
+        for(int i = 1; i <= N; i++) {
+            result[i] = BFS(i);
+            max = Math.max(max, result[i]);
         }
 
-        for (int i = 1; i <= N; i++) {
-            if (max == trust[i]) {
-                bw.write(i + " ");
-            }
+        for(int i = 1; i <= N; i++) {
+            if(result[i] == max) bw.write(i + " ");
         }
+        
         bw.flush();
         bw.close();
         br.close();
     }
 
-    static void BFS(int i) {
-        visited = new boolean[N + 1];
-        visited[i] = true;
+    static int BFS(int s) {
+        boolean[] visited = new boolean[N + 1];
         Queue<Integer> q = new LinkedList<>();
-        q.add(i);
+        q.add(s);
+        visited[s] = true;
+        int count = 0;
 
-        while (!q.isEmpty()) {
-            int x = q.poll();
-            for (int node : A[x]) {
-                if(!visited[node]) {
-                    q.add(node);
-                    trust[node]++;
-                    visited[node] = true;
+        while(!q.isEmpty()) {
+            int now  = q.poll();
+
+            for(int next : A[now]) {
+                if(!visited[next]) {
+                    visited[next] = true;
+                    q.add(next);
+                    count++;
                 }
             }
         }
+        return count;
     }
 }
