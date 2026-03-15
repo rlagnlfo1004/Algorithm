@@ -16,7 +16,7 @@ public class Main {
 
     static int N;
     static ArrayList<Integer>[] A;
-    static boolean[] visited;
+    static int[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,6 +26,7 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
+        visited = new int[N + 1];
         A = new ArrayList[N + 1];
         for(int i = 1; i <= N; i++) A[i] = new ArrayList<>();
 
@@ -53,19 +54,21 @@ public class Main {
     }
 
     static int BFS(int s) {
-        visited = new boolean[N + 1];
-        ArrayDeque<Integer> q = new ArrayDeque<>();
-        q.addFirst(s);
-        visited[s] = true;
+        int[] q = new int[N + 1]; 
+        int head = 0;
+        int tail = 0;
+
+        q[tail++] = s;
+        visited[s] = s;
         int count = 0;
 
-        while(!q.isEmpty()) {
-            int now  = q.removeLast();
+        while(head < tail) {
+            int now = q[head++];
 
             for(int next : A[now]) {
-                if(!visited[next]) {
-                    visited[next] = true;
-                    q.addFirst(next);
+                if(visited[next] != s) {
+                    visited[next] = s;
+                    q[tail++] = next;
                     count++;
                 }
             }
