@@ -16,6 +16,7 @@ public class Main {
 
     static int N;
     static ArrayList<Integer>[] A;
+    static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -52,19 +53,19 @@ public class Main {
     }
 
     static int BFS(int s) {
-        boolean[] visited = new boolean[N + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.add(s);
+        visited = new boolean[N + 1];
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.addFirst(s);
         visited[s] = true;
         int count = 0;
 
         while(!q.isEmpty()) {
-            int now  = q.poll();
+            int now  = q.removeLast();
 
             for(int next : A[now]) {
                 if(!visited[next]) {
                     visited[next] = true;
-                    q.add(next);
+                    q.addFirst(next);
                     count++;
                 }
             }
