@@ -6,62 +6,58 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1976                           #+#        #+#      #+#    */
-/*   Solved: 2026/01/16 15:40:51 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/17 23:52:18 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
 import java.io.*;
 
 public class Main {
+
     static int[] parent;
-    
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
 
         parent = new int[N + 1];
-        for (int i = 1; i <= N; i++) {
-            parent[i] = i;
-        }
+        for(int i = 1; i <= N; i++) parent[i] = i;
 
-        for (int i = 1; i <= N; i++) {
+        StringTokenizer st;
+        for(int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 1; j <= N; j++) {
-                if(st.nextToken().equals("1")) {
+
+            for(int j = 1; j <= N; j++) {
+                if(st.nextToken().equals("1") && i < j) {
                     union(i, j);
                 }
             }
         }
-        
+
         st = new StringTokenizer(br.readLine());
-        int index = find(Integer.parseInt(st.nextToken()));
-        boolean result = true;
-        for (int i = 0; i < M - 1; i++) {
-            if(index != find(Integer.parseInt(st.nextToken()))) {
-                result = false;
+        int[] path = new int[M];
+        path[0] = Integer.parseInt(st.nextToken());
+
+        boolean result = false;
+        for(int i = 1; i < M; i++) {
+            path[i] = Integer.parseInt(st.nextToken());
+            if(find(path[i]) != find(path[i - 1])) {
+                System.out.println("NO");
+                return;
             }
         }
-        if(result) System.out.println("YES");
-        else System.out.println("NO");
-    }
-
-    static void union(int i, int j) {
-        int a = find(i);
-        int b = find(j);
-
-        if(a != b) {
-            parent[b] = a;
-        }
+        System.out.println("YES");
+        br.close();
     }
 
     static int find(int a) {
-        if(parent[a] == a) {
-            return a;
-        }
-
+        if(a == parent[a]) return a;
+        
         return parent[a] = find(parent[a]);
+    }
+
+    static void union(int a, int b) {
+        parent[find(b)] = find(a);
     }
 }
