@@ -36,13 +36,10 @@ public class Main {
         }
 
         st = new StringTokenizer(br.readLine());
-        int[] path = new int[M];
-        path[0] = Integer.parseInt(st.nextToken());
+        int path = find(Integer.parseInt(st.nextToken()));
 
-        boolean result = false;
         for(int i = 1; i < M; i++) {
-            path[i] = Integer.parseInt(st.nextToken());
-            if(find(path[i]) != find(path[i - 1])) {
+            if(path != find(Integer.parseInt(st.nextToken()))) {
                 System.out.println("NO");
                 return;
             }
