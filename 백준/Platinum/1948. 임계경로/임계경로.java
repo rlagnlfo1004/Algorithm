@@ -6,7 +6,7 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1948                           #+#        #+#      #+#    */
-/*   Solved: 2026/01/18 15:06:49 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/03/22 17:45:09 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
@@ -15,78 +15,85 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
 
-        ArrayList<Node>[] A = new ArrayList[N + 1];
-        ArrayList<Node>[] reverseA = new ArrayList[N + 1];
-        int[] inDegree = new int[N + 1];
-        int[] distance = new int[N + 1];
+        ArrayList<ArrayList<Edge>> A = new ArrayList<>();
+        ArrayList<ArrayList<Edge>> reverseA = new ArrayList<>();
 
-        for (int i = 1; i <= N; i++) {
-            A[i] = new ArrayList<>();
-            reverseA[i] = new ArrayList<>();
+        for(int i = 0; i <= N; i++) {
+            A.add(new ArrayList<>());
+            reverseA.add(new ArrayList<>());
         }
+
+        int[] D = new int[N + 1];
 
         StringTokenizer st;
-        for (int i = 0; i < M; i++) {
+        for(int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int d = Integer.parseInt(st.nextToken());
-
-            A[a].add(new Node(b, d));
-            reverseA[b].add(new Node(a, d));
-
-            inDegree[b]++;
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            A.get(u).add(new Edge(v, w));
+            reverseA.get(v).add(new Edge(u, w));
+            D[v]++;
         }
-
+        
         st = new StringTokenizer(br.readLine());
-        int startNode = Integer.parseInt(st.nextToken());
-        int endNode = Integer.parseInt(st.nextToken());
+        int S = Integer.parseInt(st.nextToken());
+        int E = Integer.parseInt(st.nextToken());
+        
+        int[] length = new int[N + 1];
+        Queue<Integer> Q = new LinkedList<>();
+        Q.add(S);
 
-        Queue<Integer> q = new LinkedList<Integer>();
-        q.add(startNode);
-        while(!q.isEmpty()) {
-            int now = q.poll();
-            for (Node nextNode : A[now]) {
-                inDegree[nextNode.v]--;
-                distance[nextNode.v] = Math.max(distance[now] + nextNode.d, distance[nextNode.v]);
-                if (inDegree[nextNode.v] == 0) {
-                    q.add(nextNode.v);
-                }
+        while(!Q.isEmpty()) {
+            int now = Q.poll();
+
+            for(Edge next : A.get(now)) {
+                length[next.v] = Math.max(length[next.v], length[now] + next.w);
+                if(--D[next.v] == 0) Q.add(next.v);
             }
         }
 
+        bw.write(length[E] + "\n");
+        
         int result = 0;
         boolean[] visited = new boolean[N + 1];
-        q.add(endNode);
-        visited[endNode] = true;
+        visited[E] = true;
+        Q.add(E);
 
-        while(!q.isEmpty()) {
-            int now = q.poll();
-            for (Node nextNode : reverseA[now]) {
-                if(distance[now] == nextNode.d + distance[nextNode.v]) {
+        while(!Q.isEmpty()) {
+            int now = Q.poll();
+
+            for(Edge next : reverseA.get(now)) {
+                if(length[now] == length[next.v] + next.w) {
                     result++;
-                    if (!visited[nextNode.v]) {
-                        visited[nextNode.v] = true;
-                        q.add(nextNode.v);
+
+                    if(!visited[next.v]) {
+                        visited[next.v] = true;
+                        Q.add(next.v);
                     }
                 }
             }
         }
-        System.out.println(distance[endNode]);
-        System.out.println(result);
+        
+        bw.write(result + "\n");
+
+        bw.flush();
+        bw.close();
+        br.close();
     }
 
-    static class Node {
+    static class Edge {
         int v;
-        int d;
+        int w;
 
-        public Node (int v, int d) {
+        public Edge(int v, int w) {
             this.v = v;
-            this.d = d;
+            this.w = w;
         }
     }
 }
