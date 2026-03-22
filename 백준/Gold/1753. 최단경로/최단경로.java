@@ -48,8 +48,10 @@ public class Main {
             visited[now.v] = true;
 
             for(Edge next : A.get(now.v)) {
-                distance[next.v] = Math.min(distance[next.v], distance[now.v] + next.w);
-                q.add(new Edge(next.v, distance[next.v]));
+                if(distance[next.v] > distance[now.v] + next.w) {
+                    distance[next.v] = distance[now.v] + next.w;
+                    q.add(new Edge(next.v, distance[next.v]));
+                }
             }
         }
 
