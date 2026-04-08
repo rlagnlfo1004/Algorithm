@@ -6,76 +6,71 @@
 /*   By: hrkim2001 <boj.kr/u/hrkim2001>              +#+    +#+          +#+  */
 /*                                                  +#+      +#+        +#+   */
 /*   https://boj.kr/1916                           #+#        #+#      #+#    */
-/*   Solved: 2026/01/18 20:47:39 by hrkim2001     ###          ###   ##.kr    */
+/*   Solved: 2026/04/09 02:28:05 by hrkim2001     ###          ###   ##.kr    */
 /*                                                                            */
 /* ************************************************************************** */
 import java.util.*;
 import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        
         int N = Integer.parseInt(br.readLine());
         int M = Integer.parseInt(br.readLine());
 
-        ArrayList<ArrayList<Edge>> A = new ArrayList<>();
-        for (int i = 0; i <= N; i++) {
-            A.add(new ArrayList<>());
-        }
-
+        ArrayList<ArrayList<Node>> A = new ArrayList<>();
+        for(int i = 0; i <= N; i++) A.add(new ArrayList<>());
+        
         StringTokenizer st;
-        for (int i = 0; i < M; i++) {
+        for(int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
-
-            A.get(a).add(new Edge(b, c));
-        }
-
-        int[] distance = new int[N + 1];
-        for (int i = 0; i <= N; i++) {
-            distance[i] = Integer.MAX_VALUE;
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            A.get(u).add(new Node(v, w));
         }
 
         st = new StringTokenizer(br.readLine());
         int start = Integer.parseInt(st.nextToken());
         int end = Integer.parseInt(st.nextToken());
-        distance[start] = 0;
-        
+
         boolean[] visited = new boolean[N + 1];
-        PriorityQueue<Edge> q = new PriorityQueue<>();
-        q.add(new Edge(start, 0));
 
-        while(!q.isEmpty()) {
-            Edge nowEdge = q.poll();
-            if(visited[nowEdge.v]) continue;
-            visited[nowEdge.v] = true;
+        PriorityQueue<Node> Q = new PriorityQueue<>();
+        Q.add(new Node(start, 0));
+        
+        while(!Q.isEmpty()) {
+            Node now = Q.poll();
+            
+            if(now.v == end) {
+                System.out.println(now.w);
+                return;
+            }
 
-            for (Edge nextEdge : A.get(nowEdge.v)) {
-                if(visited[nextEdge.v]) continue;
-                if(distance[nextEdge.v] > distance[nowEdge.v] + nextEdge.d) {
-                    distance[nextEdge.v] = distance[nowEdge.v] + nextEdge.d;
-                    q.add(new Edge(nextEdge.v, distance[nextEdge.v]));
-                }
+            if(visited[now.v]) continue;
+            visited[now.v] = true;
+
+            for(Node next : A.get(now.v)) {
+                Q.add(new Node(next.v, now.w + next.w));
             }
         }
 
-        System.out.println(distance[end]);
+        br.close();
     }
 
-    static class Edge implements Comparable<Edge> {
+    static class Node implements Comparable<Node> {
         int v;
-        int d;
-        public Edge(int v, int d) {
+        int w;
+
+        public Node(int v, int w) {
             this.v = v;
-            this.d = d;
+            this.w = w;
         }
 
         @Override
-        public int compareTo (Edge e) {
-            return this.d - e.d;
+        public int compareTo(Node o) {
+            return this.w - o.w;
         }
     }
 }
