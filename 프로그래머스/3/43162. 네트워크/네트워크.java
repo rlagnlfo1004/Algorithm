@@ -1,31 +1,39 @@
 import java.util.*;
 
 class Solution {
+    
+    private int[] parent;
+    
     public int solution(int n, int[][] computers) {
-        
-        int answer = 0;
-        boolean[] visited = new boolean[n];
+    
+        parent = new int[n];
+        for(int i = 0; i < n; i++) parent[i] = i;
         
         for(int i = 0; i < n; i++) {
-            if(visited[i]) continue;
-            
-            Queue<Integer> Q = new LinkedList<>();
-            Q.add(i);
-            visited[i] = true;
-            answer++;
-            
-            while(!Q.isEmpty()) {
-                int now = Q.poll();
-            
-                for(int j = 0; j < n; j++) {
-                    if(computers[now][j] == 1 && j != now && !visited[j]) {
-                        Q.add(j);
-                        visited[j] = true;
-                    }
-                }
+            for(int j = i + 1; j < n; j++) {
+                if(computers[i][j] == 1 && i != j) union(i, j);
             }
         }
         
+        int answer = 0;
+        Set<Integer> net = new HashSet<>();
+        
+        for(int i = 0; i < n; i++) {
+            if(net.add(find(i))) answer++;
+        }
         return answer;
+    }
+    
+    private void union(int a, int b) {
+        int parentA = find(a);
+        int parentB = find(b);
+        
+        if(parentA != parentB) parent[parentB] = parentA;
+    }
+    
+    private int find(int a) {
+        if(parent[a] == a) return a;
+        
+        return parent[a] = find(parent[a]);
     }
 }
