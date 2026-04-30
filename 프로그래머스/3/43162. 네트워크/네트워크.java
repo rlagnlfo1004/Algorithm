@@ -11,17 +11,16 @@ class Solution {
         
         for(int i = 0; i < n; i++) {
             for(int j = i + 1; j < n; j++) {
-                if(computers[i][j] == 1 && i != j) union(i, j);
+                if(computers[i][j] == 1) union(i, j);
             }
         }
         
-        int answer = 0;
         Set<Integer> net = new HashSet<>();
         
         for(int i = 0; i < n; i++) {
-            if(net.add(find(i))) answer++;
+            net.add(find(i));
         }
-        return answer;
+        return net.size();
     }
     
     private void union(int a, int b) {
