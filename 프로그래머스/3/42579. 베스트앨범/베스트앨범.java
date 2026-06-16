@@ -2,35 +2,52 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
-        HashMap<String, Integer> totalMap = new HashMap<>();
-        HashMap<String, PriorityQueue<int[]>> songMap = new HashMap<>();
+        
+        Map<String, Integer> genMap = new HashMap<>();
+        Map<String, List<Song>> songMap = new HashMap<>();
         
         for(int i = 0; i < genres.length; i++) {
-            totalMap.put(genres[i], totalMap.getOrDefault(genres[i], 0) + plays[i]);
-            PriorityQueue<int[]> queue = songMap.getOrDefault(genres[i], new PriorityQueue<>((o1, o2) -> {
-                    if(o1[1] == o2[1]) return o1[0] - o2[0];
-                    else return o2[1] - o1[1];
-                }));
-            queue.add(new int[]{i, plays[i]});
-            songMap.put(genres[i], queue);
+            String gen = genres[i];
+            int play = plays[i];
+            
+            genMap.put(gen, genMap.getOrDefault(gen, 0) + play);
+            songMap.putIfAbsent(gen, new ArrayList<>());
+            songMap.get(gen).add(new Song(i, play));
         }
         
-        List<String> genreList = new ArrayList<>(totalMap.keySet());
-        Collections.sort(genreList, (o1, o2) -> totalMap.get(o2) - totalMap.get(o1));
-        ArrayList<Integer> answerList = new ArrayList<>();
+        List<String> genList = new ArrayList<>(genMap.keySet());
+        genList.sort((o1, o2) -> genMap.get(o2) - genMap.get(o1));
         
-        for(String genre : genreList) {
-            PriorityQueue<int[]> queue = songMap.get(genre);
-            
-            for(int i = 0; i < 2 && !queue.isEmpty(); i++) {
-                answerList.add(queue.poll()[0]);
+        List<Integer> result = new ArrayList<>();
+        
+        for(String gen : genList) {
+            List<Song> songs = songMap.get(gen);
+            Collections.sort(songs);
+            for (int i = 0; i < Math.min(2, songs.size()); i++) {
+                result.add(songs.get(i).index);
             }
         }
         
-        int[] answer = new int[answerList.size()];
-        for(int i = 0; i < answerList.size(); i++) {
-            answer[i] = answerList.get(i);
+        int[] answer = new int[result.size()];
+        for(int i = 0; i < result.size(); i++) {
+            answer[i] = result.get(i);
         }
         return answer;
+    }
+    
+    class Song implements Comparable<Song> {
+        int index;
+        int play;
+        
+        public Song(int index, int play) {
+            this.index = index;
+            this.play = play;
+        }
+        
+        @Override
+        public int compareTo(Song s) {
+            if(s.play != play) return s.play - play;
+            return index - s.index;
+        }
     }
 }
